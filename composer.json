@@ -1,0 +1,19 @@
+{
+    "name": "mswagencia/photo-gallery",
+    "description": "PhotoGallery",
+    "type": "cakephp-plugin",
+    "require": {
+        "php": ">=5.4",
+        "cakephp/cakephp": "~3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PhotoGallery\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhotoGallery\\Test\\": "tests",
+        }
+    }
+}
