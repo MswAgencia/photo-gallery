@@ -13,7 +13,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "PhotoGallery\\Test\\": "tests",
+            "PhotoGallery\\Test\\": "tests"
         }
     }
 }
