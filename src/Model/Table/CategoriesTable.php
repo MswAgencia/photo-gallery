@@ -7,6 +7,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use PhotoGallery\Model\Entity\Category;
+use Cake\Cache\Cache;
 
 /**
  * Categories Model
@@ -121,6 +122,9 @@ class CategoriesTable extends Table
                 'Galleries.Photos' => function ($q) { return $q->where(['Photos.status' => 1])->order(['Photos.sort_order' => 'ASC']); }, 
                 'Galleries.Photos.PhotosThumbnails'])
             ->where(['Categories.status' => 1])
+            ->cache(function ($q){
+                return 'pg_get_all_active_cat-' . md5(serialize($q->clause('where')));
+            }, 'photo_gallery_cache')
             ->all();
     }
 
@@ -136,6 +140,18 @@ class CategoriesTable extends Table
         $query->matching('Galleries', function ($q) { return $q->where(['Galleries.status' => 1]); })
             ->matching('Galleries.Photos', function ($q) { return $q->where(['Photos.status' => 1]); }) 
             ->where(['Categories.status' => 1, 'Categories.slug' => $id])
+            ->cache(function ($q){
+                return 'pg_get_category-' . md5(serialize($q->clause('where')));
+            }, 'photo_gallery_cache')
             ->first();
+    }
+
+    public function afterDelete(Event $event, Category $category, \ArrayObject $options) {
+        Cache::clear(false, 'photo_gallery_cache');
+    }
+
+    public function beforeSave(Event $event, Category $category, \ArrayObject $options)
+    {
+        Cache::clear(false, 'photo_gallery_cache');
     }
 }
