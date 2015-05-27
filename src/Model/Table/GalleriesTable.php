@@ -7,6 +7,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use PhotoGallery\Model\Entity\Gallery;
+use Cake\Cache\Cache;
 
 /**
  * Galleries Model
@@ -129,5 +130,14 @@ class GalleriesTable extends Table
             throw new NotFoundException();
 
         return $this->delete($entity);
+    }
+
+    public function afterDelete(Event $event, Gallery $gallery, \ArrayObject $options) {
+        Cache::clear(false, 'photo_gallery_cache');
+    }
+
+    public function beforeSave(Event $event, Gallery $gallery, \ArrayObject $options)
+    {
+        Cache::clear(false, 'photo_gallery_cache');
     }
 }
