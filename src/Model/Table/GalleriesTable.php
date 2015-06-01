@@ -89,6 +89,10 @@ class GalleriesTable extends Table
         return $this->find()
             ->contain(['Categories', 'Photos.PhotosThumbnails.Photos'])
             ->where(['Galleries.id' => $id])
+            ->where(['Galleries.status' => 1])
+            ->cache(function ($q) {
+                return 'pg_get_gallery-' . md5(serialize($q->clause('where')));
+            }, 'photo_gallery_cache')
             ->first();
     }
 
