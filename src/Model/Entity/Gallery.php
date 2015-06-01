@@ -70,11 +70,14 @@ class Gallery extends Entity
      * @return [type] [description]
      */
     public function getPhotosSorted() {
-        $photosCollection = new Collection($this->photos);
+        if(isset($this->photos) and !empty($this->photos)) {
+            $photosCollection = new Collection($this->photos);
 
-        return $photosCollection->sortBy(function ($photo){
-            return $photo->sort_order;
-        }, SORT_ASC)->toArray();
+            return $photosCollection->sortBy(function ($photo){
+                return $photo->sort_order;
+            }, SORT_ASC)->toArray();
+        }
+        return [];
     }
 
     /**
