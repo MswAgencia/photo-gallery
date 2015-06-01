@@ -100,6 +100,17 @@ class GalleriesTable extends Table
         return $this->find()->all();
     }
 
+    public function getAllActiveGalleries()
+    {
+        return $this->find()
+            ->contain(['Photos' => function ($q) { return $q->where(['Photos.status' => 1]); }, 'Photos.PhotosThumbnails'])
+            ->where(['Galleries.status' => 1])
+            ->cache(function ($q) {
+                return 'pg_get_all_active_galleries-' . md5(serialize($q->clause('where')));
+            }, 'photo_gallery_cache')
+            ->all();
+    }
+
     /**
      * [insertNewGallery description]
      * @param  array  $data [description]
