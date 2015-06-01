@@ -7,6 +7,7 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use PhotoGallery\Model\Entity\Photo;
 use Cake\ORM\TableRegistry;
+use Cake\Cache\Cache;
 
 /**
  * Photos Model
