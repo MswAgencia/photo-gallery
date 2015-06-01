@@ -100,4 +100,14 @@ class PhotosTable extends Table
         }
         return $entities;
     }
+
+    public function afterDelete(Event $event, Photo $photo, \ArrayObject $options) 
+    {
+        Cache::clear(false, 'photo_gallery_cache');
+    }
+
+    public function beforeSave(Event $event, Photo $photo, \ArrayObject $options)
+    {
+        Cache::clear(false, 'photo_gallery_cache');
+    }
 }
