@@ -12,7 +12,7 @@ use Cake\Core\Configure;
 class GalleriesController extends AppController
 {
     public $helpers = ['AppCore.Form', 'DefaultAdminTheme.PanelMenu'];
-    
+
     /**
      * [index description]
      * @return [type] [description]
@@ -30,6 +30,28 @@ class GalleriesController extends AppController
         if($this->request->is('post')) {
             $galleriesTable = TableRegistry::get('PhotoGallery.Galleries');
             $data = $this->request->data;
+
+            $uploader = new ImageUploader();
+            if($uploader->setData($data['image'])) {
+              $uploader->setPath('photo-gallery');
+              $uploader->setConfig(new ImageUploaderConfig(
+                Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
+                Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
+                Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_resize_mode')
+              ));
+
+              $image = $uploader->upload();
+              if($image) {
+                  $data['image'] = $image;
+              }
+              else {
+                $data['image'] = '';
+              }
+            }
+            else {
+              $data['image'] = '';
+            }
+
             $result = $galleriesTable->insertNewGallery($data);
 
             if($result) {
@@ -85,6 +107,6 @@ class GalleriesController extends AppController
         else {
             $this->Flash->set('Erro ao tentar adicionar uma nova galeria.', ['element' => 'AppCore.alert_danger']);
         }
-        $this->redirect('/interno/galeria-de-fotos/galerias');
+        $this->redirect(['action' => 'index']);
     }
 }
