@@ -19,10 +19,10 @@ class CategoriesController extends AppController
      * @return [type] [description]
      */
     public function index() {
-        $categoriesTable = TableRegistry::get('PhotoGallery.Categories');
-        $data = $categoriesTable->getAllCategories();
+        $this->Categories = TableRegistry::get('PhotoGallery.Categories');
+        $categories = $this->Categories->getAllCategories();
 
-        $this->set('data', $data);
+        $this->set('data', $categories);
         $this->set('tableHeaders', ['Nome', 'Status', 'Opções']);
         $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
     }
@@ -30,11 +30,12 @@ class CategoriesController extends AppController
     /**
      * [add description]
      */
-    public function add() {
+    public function add()
+    {
         if($this->request->is('post')) {
-            $categoriesTable = TableRegistry::get('PhotoGallery.Categories');
+            $this->Categories = TableRegistry::get('PhotoGallery.Categories');
             $data = $this->request->data;
-            $result = $categoriesTable->insertNewCategory($data);
+            $result = $this->Categories->insertNewCategory($data);
 
             if($result) {
                 $this->Flash->set('Nova categoria adicionada!', ['element' => 'alert_success']);
@@ -51,26 +52,27 @@ class CategoriesController extends AppController
      * @param  [type] $id [description]
      * @return [type]     [description]
      */
-    public function edit($id) {
-        $categoriesTable = TableRegistry::get('PhotoGallery.Categories');
+    public function edit($id)
+    {
+        $this->Categories = TableRegistry::get('PhotoGallery.Categories');
         try {
             if($this->request->is('post')) {
 
-                $category = $categoriesTable->get($id);
+                $category = $this->Categories->get($id);
                 $data = $this->request->data;
 
-                $category = $categoriesTable->patchEntity($category, $data);
-                if($categoriesTable->save($category))
+                $category = $this->Categories->patchEntity($category, $data);
+                if($this->Categories->save($category))
                     $this->Flash->set('Categoria editada!', ['element' => 'alert_success']);
                 else
                     $this->Flash->set('Não foi possível editar a categoria!', ['element' => 'alert_danger']);
             }
-            $this->set('category', $categoriesTable->get($id));
+            $this->set('category', $this->Categories->get($id));
             $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
         }
         catch(\Exception $e) {
             $this->Flash->set('Categoria inexistente.', ['element' => 'alert_danger']);
-            $this->redirect('/interno/galeria-de-fotos/categorias');
+            $this->redirect(['action' => 'index']);
         }
     }
 
@@ -80,8 +82,8 @@ class CategoriesController extends AppController
      * @return [type]     [description]
      */
     public function delete($id) {
-        $categoriesTable = TableRegistry::get('PhotoGallery.Categories');
-        $result = $categoriesTable->deleteCategory($id);
+        $this->Categories = TableRegistry::get('PhotoGallery.Categories');
+        $result = $this->Categories->deleteCategory($id);
 
         if($result) {
             $this->Flash->set('Categoria removida!', ['element' => 'alert_success']);
@@ -89,6 +91,6 @@ class CategoriesController extends AppController
         else {
             $this->Flash->set('Erro ao tentar adicionar uma nova categoria.', ['element' => 'alert_danger']);
         }
-        $this->redirect('/interno/galeria-de-fotos/categorias');
+        $this->redirect(['action' => 'index']);
     }
 }
