@@ -4,12 +4,15 @@ use Cake\Core\Configure;
 $config['WebImobApp.Plugins.PhotoGallery.Settings'] = [
 	'General' => ['display_panel_menu' => true],
 	'Template' => [
-		'layout' => Configure::read('WebImobApp.Plugins.ControlPanel.Settings.Template.layout'), 
+		'layout' => Configure::read('WebImobApp.Plugins.ControlPanel.Settings.Template.layout'),
 		'theme' => Configure::read('WebImobApp.Plugins.ControlPanel.Settings.Template.theme')
 		],
 	'Options' => [
 		'use_order_field' => false,
-		'use_image' => false
+		'use_image' => false,
+		'gallery_cover_width' => 300,
+		'gallery_cover_height' => 490,
+		'gallery_resize_mode' => 'resize'
 	],
 	'Image' => [
 		'Photos' => [
