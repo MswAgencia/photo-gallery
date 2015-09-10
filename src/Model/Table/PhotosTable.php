@@ -8,6 +8,7 @@ use Cake\Validation\Validator;
 use PhotoGallery\Model\Entity\Photo;
 use Cake\ORM\TableRegistry;
 use Cake\Cache\Cache;
+use Cake\Event\Event;
 
 /**
  * Photos Model
@@ -102,7 +103,7 @@ class PhotosTable extends Table
         return $entities;
     }
 
-    public function afterDelete(Event $event, Photo $photo, \ArrayObject $options) 
+    public function afterDelete(Event $event, Photo $photo, \ArrayObject $options)
     {
         Cache::clear(false, 'photo_gallery_cache');
     }

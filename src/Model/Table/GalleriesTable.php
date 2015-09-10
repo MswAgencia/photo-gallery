@@ -8,6 +8,7 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use PhotoGallery\Model\Entity\Gallery;
 use Cake\Cache\Cache;
+use Cake\Event\Event;
 
 /**
  * Galleries Model
