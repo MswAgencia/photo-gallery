@@ -45,14 +45,14 @@ class GalleriesController extends AppController
 
               $image = $uploader->upload();
               if($image) {
-                  $data['image'] = $image;
+                  $data['cover'] = $image;
               }
               else {
-                $data['image'] = '';
+                $data['cover'] = '';
               }
             }
             else {
-              $data['image'] = '';
+              $data['cover'] = '';
             }
 
             $result = $this->Galleries->insertNewGallery($data);

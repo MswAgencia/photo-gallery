@@ -64,6 +64,11 @@ class GalleriesTable extends Table
             ->add('sort_order', 'valid', ['rule' => 'numeric'])
             ->allowEmpty('sort_order');
 
+        if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
+          $validator
+            ->requirePresence('cover', 'create')
+            ->notEmpty('cover', '', 'create');
+        }
         return $validator;
     }
 
@@ -140,7 +145,7 @@ class GalleriesTable extends Table
      */
     public function deleteGallery($id) {
         $entity = $this->get($id);
-        
+
         if(!$entity)
             throw new NotFoundException();
 

@@ -15,15 +15,15 @@
 			echo $this->Form->input('name', ['label' => 'Nome']);
 
 			echo $this->Form->textarea('description', ['label' => 'Descrição']);
-			
+
 			if($options['use_image']) {
 				echo '<div class="form-group">';
-				echo $this->Form->label('Imagem');
-				echo $this->Form->file('image');
+				echo $this->Form->label('Capa');
+				echo $this->Form->file('cover');
 				echo '</div>';
 			}
 			echo $this->Form->select('category_id', $categoriesList, ['label' => 'Categoria']);
-			
+
 			echo $this->Form->checkbox('status', ['label' => 'Ativar']);
 
 			echo $this->Html->tag('legend', 'Configurações');
@@ -36,4 +36,3 @@
 		?>
 	</div>
 </div>
-
