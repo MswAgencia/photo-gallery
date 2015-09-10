@@ -10,6 +10,7 @@ use PhotoGallery\Model\Entity\Gallery;
 use Cake\Cache\Cache;
 use Cake\Event\Event;
 use Cake\Filesystem\File;
+use Cake\Core\Configure;
 
 /**
  * Galleries Model
