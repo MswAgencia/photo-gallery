@@ -9,6 +9,7 @@ use Cake\Validation\Validator;
 use PhotoGallery\Model\Entity\Category;
 use Cake\Cache\Cache;
 use Cake\Event\Event;
+use Cake\Filesystem\File;
 
 /**
  * Categories Model

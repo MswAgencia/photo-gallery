@@ -9,6 +9,7 @@ use PhotoGallery\Model\Entity\Photo;
 use Cake\ORM\TableRegistry;
 use Cake\Cache\Cache;
 use Cake\Event\Event;
+use Cake\Filesystem\File;
 
 /**
  * Photos Model

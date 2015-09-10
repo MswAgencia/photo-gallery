@@ -9,6 +9,7 @@ use Cake\Validation\Validator;
 use PhotoGallery\Model\Entity\Gallery;
 use Cake\Cache\Cache;
 use Cake\Event\Event;
+use Cake\Filesystem\File;
 
 /**
  * Galleries Model

@@ -7,6 +7,7 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use PhotoGallery\Model\Entity\PhotosThumbnail;
 use Cake\Event\Event;
+use Cake\Filesystem\File;
 
 /**
  * PhotosThumbnails Model
