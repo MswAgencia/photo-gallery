@@ -4,6 +4,9 @@ namespace PhotoGallery\Controller;
 use PhotoGallery\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
+use AppCore\Lib\ImageUploader;
+use AppCore\Lib\ImageUploaderConfig;
+
 /**
  * Galleries Controller
  *
@@ -18,9 +21,9 @@ class GalleriesController extends AppController
      * @return [type] [description]
      */
     public function index() {
-        $galleriesTable = TableRegistry::get('PhotoGallery.Galleries');
+        $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
         $this->set('tableHeaders', ['Imagem', 'Nome', 'Status', 'Opções']);
-        $this->set('data', $galleriesTable->getAllGalleries());
+        $this->set('data', $this->Galleries->getAllGalleries());
     }
 
     /**
@@ -28,7 +31,7 @@ class GalleriesController extends AppController
      */
     public function add() {
         if($this->request->is('post')) {
-            $galleriesTable = TableRegistry::get('PhotoGallery.Galleries');
+            $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
             $data = $this->request->data;
 
             $uploader = new ImageUploader();
@@ -52,7 +55,7 @@ class GalleriesController extends AppController
               $data['image'] = '';
             }
 
-            $result = $galleriesTable->insertNewGallery($data);
+            $result = $this->Galleries->insertNewGallery($data);
 
             if($result) {
                 $this->Flash->set('Nova galeria adicionada!', ['element' => 'AppCore.alert_success']);
@@ -72,13 +75,13 @@ class GalleriesController extends AppController
      * @return [type]     [description]
      */
     public function edit($id) {
-        $galleriesTable = TableRegistry::get('PhotoGallery.Galleries');
+        $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
         $categoriesTable = TableRegistry::get('PhotoGallery.Categories');
 
         if($this->request->is('post')) {
-            $galleriesTable = TableRegistry::get('PhotoGallery.Galleries');
+            $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
             $data = $this->request->data;
-            $result = $galleriesTable->updateGallery($id, $data);
+            $result = $this->Galleries->updateGallery($id, $data);
 
             if($result) {
                 $this->Flash->set('Galeria editada!', ['element' => 'AppCore.alert_success']);
@@ -87,7 +90,7 @@ class GalleriesController extends AppController
                 $this->Flash->set('Erro ao tentar adicionar uma nova galeria.', ['element' => 'AppCore.alert_danger']);
             }
         }
-        $gallery = $galleriesTable->get($id);
+        $gallery = $this->Galleries->get($id);
         $this->set('gallery', $gallery);
         $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
         $this->set('categoriesList', $categoriesTable->getCategoriesAsList());
@@ -99,8 +102,8 @@ class GalleriesController extends AppController
      * @return [type]     [description]
      */
     public function delete($id) {
-        $galleriesTable = TableRegistry::get('PhotoGallery.Galleries');
-        $result = $galleriesTable->deleteGallery($id);
+        $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
+        $result = $this->Galleries->deleteGallery($id);
         if($result) {
             $this->Flash->set('Galeria removida!', ['element' => 'AppCore.alert_success']);
         }
