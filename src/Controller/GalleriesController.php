@@ -14,102 +14,134 @@ use AppCore\Lib\ImageUploaderConfig;
  */
 class GalleriesController extends AppController
 {
-    public $helpers = ['AppCore.Form', 'DefaultAdminTheme.PanelMenu'];
+  public $helpers = ['AppCore.Form', 'DefaultAdminTheme.PanelMenu'];
 
-    /**
-     * [index description]
-     * @return [type] [description]
-     */
-    public function index() {
+  /**
+   * [index description]
+   * @return [type] [description]
+   */
+  public function index()
+  {
+      $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
+      $this->set('tableHeaders', ['Imagem', 'Nome', 'Status', 'Opções']);
+      $this->set('data', $this->Galleries->getAllGalleries());
+  }
+
+  /**
+   * [add description]
+   */
+  public function add() {
+    if($this->request->is('post')) {
         $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
-        $this->set('tableHeaders', ['Imagem', 'Nome', 'Status', 'Opções']);
-        $this->set('data', $this->Galleries->getAllGalleries());
-    }
+        $data = $this->request->data;
 
-    /**
-     * [add description]
-     */
-    public function add() {
-        if($this->request->is('post')) {
-            $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
-            $data = $this->request->data;
+        if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
+          $uploader = new ImageUploader();
+          if($uploader->setData($data['cover'])) {
+            $uploader->setPath('photo-gallery');
+            $uploader->setConfig(new ImageUploaderConfig(
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_resize_mode')
+            ));
 
-            $uploader = new ImageUploader();
-            if($uploader->setData($data['cover'])) {
-              $uploader->setPath('photo-gallery');
-              $uploader->setConfig(new ImageUploaderConfig(
-                Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
-                Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
-                Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_resize_mode')
-              ));
-
-              $image = $uploader->upload();
-              if($image) {
-                  $data['cover'] = $image;
-              }
-              else {
-                $data['cover'] = '';
-              }
+            $image = $uploader->upload();
+            $data['cover'] = '';
+            if($image) {
+                $data['cover'] = $image;
             }
-            else {
-              $data['cover'] = '';
-            }
-
-            $result = $this->Galleries->insertNewGallery($data);
-
-            if($result) {
-                $this->Flash->set('Nova galeria adicionada!', ['element' => 'AppCore.alert_success']);
-            }
-            else {
-                $this->Flash->set('Erro ao tentar adicionar uma nova galeria.', ['element' => 'AppCore.alert_danger']);
-            }
+            $uploader->close();
+          }
+          else {
+            $data['cover'] = '';
+          }
         }
-        $categoriesTable = TableRegistry::get('PhotoGallery.Categories');
-        $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
-        $this->set('categoriesList', $categoriesTable->getCategoriesAsList());
-    }
-
-    /**
-     * [edit description]
-     * @param  [type] $id [description]
-     * @return [type]     [description]
-     */
-    public function edit($id) {
-        $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
-        $categoriesTable = TableRegistry::get('PhotoGallery.Categories');
-
-        if($this->request->is('post')) {
-            $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
-            $data = $this->request->data;
-            $result = $this->Galleries->updateGallery($id, $data);
-
-            if($result) {
-                $this->Flash->set('Galeria editada!', ['element' => 'AppCore.alert_success']);
-            }
-            else {
-                $this->Flash->set('Erro ao tentar adicionar uma nova galeria.', ['element' => 'AppCore.alert_danger']);
-            }
+        else {
+          $data['cover'] = '';
         }
-        $gallery = $this->Galleries->get($id);
-        $this->set('gallery', $gallery);
-        $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
-        $this->set('categoriesList', $categoriesTable->getCategoriesAsList());
-    }
 
-    /**
-     * [delete description]
-     * @param  [type] $id [description]
-     * @return [type]     [description]
-     */
-    public function delete($id) {
-        $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
-        $result = $this->Galleries->deleteGallery($id);
+        $result = $this->Galleries->insertNewGallery($data);
+
         if($result) {
-            $this->Flash->set('Galeria removida!', ['element' => 'AppCore.alert_success']);
+            $this->Flash->set('Nova galeria adicionada!', ['element' => 'AppCore.alert_success']);
         }
         else {
             $this->Flash->set('Erro ao tentar adicionar uma nova galeria.', ['element' => 'AppCore.alert_danger']);
         }
-        $this->redirect(['action' => 'index']);
+      }
+      $categoriesTable = TableRegistry::get('PhotoGallery.Categories');
+      $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
+      $this->set('categoriesList', $categoriesTable->getCategoriesAsList());
+  }
+
+  /**
+   * [edit description]
+   * @param  [type] $id [description]
+   * @return [type]     [description]
+   */
+  public function edit($id) {
+      $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
+      $categoriesTable = TableRegistry::get('PhotoGallery.Categories');
+
+      if($this->request->is('post')) {
+        $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
+        $data = $this->request->data;
+
+        if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
+          $uploader = new ImageUploader();
+          if($uploader->setData($data['cover'])) {
+            $uploader->setPath('photo-gallery');
+            $uploader->setConfig(new ImageUploaderConfig(
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_resize_mode')
+            ));
+
+            $image = $uploader->upload();
+            unset($data['cover']);
+            if($image) {
+              $data['cover'] = $image;
+            }
+            $uploader->close();
+          }
+          else {
+            unset($data['cover']);
+          }
+        }
+        else {
+          unset($data['cover']);
+        }
+
+        $result = $this->Galleries->updateGallery($id, $data);
+
+        if($result) {
+          $this->Flash->set('Galeria editada!', ['element' => 'AppCore.alert_success']);
+        }
+        else {
+          $this->Flash->set('Erro ao tentar adicionar uma nova galeria.', ['element' => 'AppCore.alert_danger']);
+        }
+      }
+      $gallery = $this->Galleries->get($id);
+      $this->set('gallery', $gallery);
+      $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
+      $this->set('categoriesList', $categoriesTable->getCategoriesAsList());
+  }
+
+  /**
+   * [delete description]
+   * @param  [type] $id [description]
+   * @return [type]     [description]
+   */
+  public function delete($id)
+  {
+    $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
+    $result = $this->Galleries->deleteGallery($id);
+    if($result) {
+      $this->Flash->set('Galeria removida!', ['element' => 'AppCore.alert_success']);
     }
+    else {
+      $this->Flash->set('Erro ao tentar adicionar uma nova galeria.', ['element' => 'AppCore.alert_danger']);
+    }
+    $this->redirect(['action' => 'index']);
+  }
 }
