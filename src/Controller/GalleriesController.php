@@ -35,7 +35,7 @@ class GalleriesController extends AppController
             $data = $this->request->data;
 
             $uploader = new ImageUploader();
-            if($uploader->setData($data['image'])) {
+            if($uploader->setData($data['cover'])) {
               $uploader->setPath('photo-gallery');
               $uploader->setConfig(new ImageUploaderConfig(
                 Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
