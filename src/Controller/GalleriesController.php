@@ -38,7 +38,7 @@ class GalleriesController extends AppController
         if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
           $uploader = new ImageUploader();
           if($uploader->setData($data['cover'])) {
-            $uploader->setPath('photo-gallery');
+            $uploader->setPath('galleries');
             $uploader->setConfig(new ImageUploaderConfig(
               Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
               Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
@@ -90,7 +90,7 @@ class GalleriesController extends AppController
         if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
           $uploader = new ImageUploader();
           if($uploader->setData($data['cover'])) {
-            $uploader->setPath('photo-gallery');
+            $uploader->setPath('galleries');
             $uploader->setConfig(new ImageUploaderConfig(
               Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
               Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
