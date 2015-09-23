@@ -28,9 +28,9 @@
 
 			echo $this->Html->tag('legend', 'Configurações');
 
-			echo $this->Form->input('photo_width', ['label' => 'Largura das Fotos (pixels)', 'value' => 250]);
-			echo $this->Form->input('photo_height', ['label' => 'Altura das Fotos (pixels)', 'value' => 250]);
-			echo $this->Form->select('photo_resize_mode', ['resize' => 'Redimensionar', 'resizeCrop' => 'Redimensionar e Cortar'], ['label' => 'Modo de Redimensionamento', 'value' => 'resizeCrop']);
+			echo $this->Form->input('photo_width', ['label' => 'Largura das Fotos (pixels)', 'value' => $options['default_gallery_photos_width']]);
+			echo $this->Form->input('photo_height', ['label' => 'Altura das Fotos (pixels)', 'value' => $options['default_gallery_photos_height']]);
+			echo $this->Form->select('photo_resize_mode', ['resize' => 'Redimensionar', 'resizeCrop' => 'Redimensionar e Cortar'], ['label' => 'Modo de Redimensionamento', 'value' => $options['default_gallery_photos_resize_mode']]);
 			echo $this->Form->submit('Cadastrar', ['class' => 'btn btn-primary']);
 			echo $this->Form->end();
 		?>
