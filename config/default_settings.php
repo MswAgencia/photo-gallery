@@ -12,10 +12,13 @@ $config['WebImobApp.Plugins.PhotoGallery.Settings'] = [
 		'use_image' => false,
 		'gallery_cover_width' => 300,
 		'gallery_cover_height' => 490,
-		'gallery_resize_mode' => 'resize',
+		'gallery_cover_resize_mode' => 'resize',
 		'default_gallery_photos_width' => 250,
 		'default_gallery_photos_height' => 250,
-		'default_gallery_photos_resize_mode' => 'resizeCrop'
+		'default_gallery_photos_resize_mode' => 'resizeCrop',
+		'gallery_cover_thumbnail_width' => 250,
+		'gallery_cover_thumbnail_height' => 250,
+		'gallery_cover_thumbnail_resize_mode' => 'resizeCrop',
 	],
 	'Image' => [
 		'Photos' => [
