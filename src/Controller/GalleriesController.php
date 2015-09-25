@@ -81,6 +81,7 @@ class GalleriesController extends AppController
 
         if($result) {
             $this->Flash->set('Nova galeria adicionada!', ['element' => 'AppCore.alert_success']);
+            $this->request->data = [];
         }
         else {
             $this->Flash->set('Erro ao tentar adicionar uma nova galeria.', ['element' => 'AppCore.alert_danger']);
