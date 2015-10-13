@@ -4,8 +4,8 @@
     "type": "cakephp-plugin",
     "require": {
         "php": ">=5.4",
-        "cakephp/cakephp": "~3.0",
-        "mswagencia/msw-appcore": "~1.0"
+        "cakephp/cakephp": "3.0.*",
+        "mswagencia/msw-appcore": "~2.0"
     },
     "autoload": {
         "psr-4": {
