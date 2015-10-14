@@ -4,22 +4,18 @@ namespace PhotoGallery\Controller;
 use PhotoGallery\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
-use AppCore\Lib\ImageUploader;
-use AppCore\Lib\ImageUploaderConfig;
+use SimpleFileUploader\FileUploader;
 
-/**
- * Galleries Controller
- *
- * @property \PhotoGallery\Model\Table\GalleriesTable $Galleries
- */
 class GalleriesController extends AppController
 {
   public $helpers = ['AppCore.Form', 'DefaultAdminTheme.PanelMenu'];
 
-  /**
-   * [index description]
-   * @return [type] [description]
-   */
+  public function initialize()
+  {
+    $this->loadModel('PhotoGallery.Galleries');
+    $this->loadModel('PhotoGallery.Categories');
+  }
+
   public function index()
   {
     $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
@@ -27,111 +23,116 @@ class GalleriesController extends AppController
     $this->set('data', $this->Galleries->getAllGalleries());
   }
 
-  /**
-   * [add description]
-   */
   public function add()
   {
     if($this->request->is('post')) {
-        $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
-        $data = $this->request->data;
+      $data = $this->request->data;
 
-        if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
-          $uploader = new ImageUploader();
-          if($uploader->setData($data['cover'])) {
-            $uploader->setPath('galleries');
-            $uploader->setConfig(new ImageUploaderConfig(
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_resize_mode')
-            ));
+      if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
+        $uploader = new FileUploader();
+        $uploader->allowTypes('image/jpg', 'image/jpeg', 'image/png')
+          ->setDestination(TMP . 'uploads');
 
-            $image = $uploader->upload();
-            $data['cover'] = '';
-            $data['cover_thumbnail'] = '';
+        $uploadedImage = $uploader->upload($data['cover']);
+        $image = new Image($uploadedImage);
 
-            if($image) {
-                $data['cover'] = $image;
+        $image->resizeTo(
+          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
+          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
+          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_resize_mode')
+        );
 
-                $uploader->setConfig(new ImageUploaderConfig(
-                  Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width'),
-                  Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height'),
-                  Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_resize_mode')
-                ));
+        $cover = $image->save(WWW_ROOT . 'img/galleries/');
 
-                $coverThumbnail = $uploader->thumbnail();
-                if($coverThumbnail) {
-                  $data['cover_thumbnail'] = $coverThumbnail;
-                }
-            }
+        if($cover) {
+          $data['cover'] = 'img/galleries/' . $cover->getFilename();
 
-            $uploader->close();
+        $data['cover'] = '';
+        $data['cover_thumbnail'] = '';
+
+        $image->resizeTo(
+          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width'),
+          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height'),
+          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_resize_mode')
+        );
+
+        $thumbnailImageName = 'thumb_' .
+          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width') . '_' .
+          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height') .
+          $image->getFilename();
+
+          $coverThumbnail = $image->save(WWW_ROOT . 'img/galleries/', $thumbnailImageName);
+          if($coverThumbnail) {
+            $data['cover_thumbnail'] = 'img/galleries/' . $coverThumbnail->getFilename();
           }
-          else {
-            $data['cover'] = '';
-            $data['cover_thumbnail'] = '';
-          }
-        }
-        else {
-          $data['cover'] = '';
-          $data['cover_thumbnail'] = '';
-        }
-
-        $result = $this->Galleries->insertNewGallery($data);
-
-        if($result) {
-            $this->Flash->set('Nova galeria adicionada!', ['element' => 'AppCore.alert_success']);
-            $this->request->data = [];
-        }
-        else {
-            $this->Flash->set('Erro ao tentar adicionar uma nova galeria.', ['element' => 'AppCore.alert_danger']);
         }
       }
-      $categoriesTable = TableRegistry::get('PhotoGallery.Categories');
-      $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
-      $this->set('categoriesList', $categoriesTable->getCategoriesAsList());
+      else {
+        $data['cover'] = '';
+        $data['cover_thumbnail'] = '';
+      }
+    }
+    else {
+      $data['cover'] = '';
+      $data['cover_thumbnail'] = '';
+    }
+
+    $result = $this->Galleries->insertNewGallery($data);
+
+    if($result) {
+      $this->Flash->set('Nova galeria adicionada!', ['element' => 'AppCore.alert_success']);
+      $this->request->data = [];
+    }
+    else {
+      $this->Flash->set('Erro ao tentar adicionar uma nova galeria.', ['element' => 'AppCore.alert_danger']);
+    }
+
+    $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
+    $this->set('categoriesList', $this->Categories->getCategoriesAsList());
   }
+
 
   public function edit($id)
   {
-      $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
-      $categoriesTable = TableRegistry::get('PhotoGallery.Categories');
+    if($this->request->is('post')) {
+      $data = $this->request->data;
 
-      if($this->request->is('post')) {
-        $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
-        $data = $this->request->data;
+      if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
+        $uploader = new FileUploader();
+        $uploader->allowTypes('image/jpg', 'image/jpeg', 'image/png')
+            ->setDestination(TMP . 'uploads');
 
-        if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
-          $uploader = new ImageUploader();
-          if($uploader->setData($data['cover'])) {
-            $uploader->setPath('galleries');
-            $uploader->setConfig(new ImageUploaderConfig(
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_resize_mode')
-            ));
+        $uploadedImage = $uploader->upload($data['cover']);
+        $image = new Image($uploadedImage);
 
-            $image = $uploader->upload();
+        $image->resizeTo(
+          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
+          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
+          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_resize_mode')
+        );
+
+        $cover = $image->save(WWW_ROOT . 'img/galleries/');
+        unset($data['cover']);
+
+        if($cover)
+          $data['cover'] = 'img/galleries/' . $cover->getFilename();
+
+          $image->resizeTo(
+            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width'),
+            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height'),
+            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_resize_mode')
+          );
+
+          $thumbnailImageName = 'thumb_' .
+            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width') . '_' .
+            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height') .
+            $image->getFilename();
+
+          $coverThumbnail = $image->save(WWW_ROOT . 'img/galleries/', $thumbnailImageName);
+          if($coverThumbnail)
+            $data['cover_thumbnail'] = 'img/galleries/' . $coverThumbnail->getFilename();
+          else
             unset($data['cover']);
-            if($image) {
-              $data['cover'] = $image;
-
-              $uploader->setConfig(new ImageUploaderConfig(
-                Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width'),
-                Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height'),
-                Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_resize_mode')
-              ));
-
-              $coverThumbnail = $uploader->thumbnail();
-              if($coverThumbnail) {
-                $data['cover_thumbnail'] = $coverThumbnail;
-              }
-            }
-            $uploader->close();
-          }
-          else {
-            unset($data['cover']);
-          }
         }
         else {
           unset($data['cover']);
@@ -149,8 +150,9 @@ class GalleriesController extends AppController
       $gallery = $this->Galleries->get($id);
       $this->set('gallery', $gallery);
       $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
-      $this->set('categoriesList', $categoriesTable->getCategoriesAsList());
+      $this->set('categoriesList', $this->Categories->getCategoriesAsList());
   }
+
 
   public function delete($id)
   {
