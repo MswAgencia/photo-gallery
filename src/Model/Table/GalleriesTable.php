@@ -60,17 +60,17 @@ class GalleriesTable extends Table
       ->add('id', 'valid', ['rule' => 'numeric'])
       ->allowEmpty('id', 'create')
       ->requirePresence('name', 'create')
-      ->notEmpty('name')
+      ->notEmpty('name', 'Por favor, insira um nome para a galeria')
       ->add('category_id', 'valid', ['rule' => 'numeric'])
       ->requirePresence('category_id', 'create')
-      ->notEmpty('category_id')
+      ->notEmpty('category_id', 'Uma caregoria deve ser selecionada.')
       ->add('sort_order', 'valid', ['rule' => 'numeric'])
       ->allowEmpty('sort_order');
 
     if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
       $validator
         ->requirePresence('cover', 'create')
-        ->notEmpty('cover', '', 'create');
+        ->notEmpty('cover', 'Por favor, selecione uma imagem para ser a capa da galeria', 'create');
     }
     return $validator;
   }
