@@ -12,6 +12,7 @@ class GalleriesController extends AppController
 
   public function initialize()
   {
+    parent::initialize();
     $this->loadModel('PhotoGallery.Galleries');
     $this->loadModel('PhotoGallery.Categories');
   }
