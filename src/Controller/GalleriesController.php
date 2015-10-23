@@ -5,6 +5,7 @@ use PhotoGallery\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use SimpleFileUploader\FileUploader;
+use AppCore\Lib\Image\Image;
 
 class GalleriesController extends AppController
 {
