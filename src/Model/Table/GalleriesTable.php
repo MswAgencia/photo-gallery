@@ -153,7 +153,12 @@ class GalleriesTable extends Table
   public function afterDelete(Event $event, Gallery $gallery, \ArrayObject $options)
   {
     if(!empty($gallery->cover)) {
-      $file = new File(WWW_ROOT . 'img' . DS . $gallery->cover);
+      $file = new File(WWW_ROOT . 'img/' . $gallery->cover);
+      $file->delete();
+      $file->close();
+    }
+    if(!empty($gallery->cover_thumbnail)) {
+      $file = new File(WWW_ROOT . 'img/' . $gallery->cover_thumbnail);
       $file->delete();
       $file->close();
     }
