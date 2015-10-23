@@ -139,9 +139,9 @@ class GalleriesTable extends Table
     if(!$gallery->hasErrors() and !$this->save($gallery))
       throw new InternalErrorException('Não foi possivel salvar no banco de dados.');
 
-    $file = new File(WWW_ROOT . 'img' . $oldCover);
+    $file = new File(WWW_ROOT . 'img/' . $oldCover);
     $file->delete();
-    $file = new File(WWW_ROOT . 'img' . $oldCoverThumbnail);
+    $file = new File(WWW_ROOT . 'img/' . $oldCoverThumbnail);
     $file->delete();
 
     return $gallery;
