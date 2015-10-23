@@ -117,37 +117,41 @@ class GalleriesTable extends Table
   }
 
 
-  public function insert(array $data)
+  public function insertGallery(array $data)
   {
-    $entity = $this->newEntity($data);
+    $gallery = $this->newEntity($data);
 
-    if(!$entity->hasErrors() and !$this->save($entity))
+    if(!$gallery->hasErrors() and !$this->save($gallery))
       throw new InternalErrorException('Não foi possivel salvar no banco de dados.');
 
-    return $entity;
-  }
-
-  public function insertNewGallery(array $data)
-  {
-    return $this->insert($data);
+    return $gallery;
   }
 
   public function updateGallery($id, $data)
   {
     $gallery = $this->get($id);
 
+    $oldCover = $gallery->cover;
+    $oldCoverThumbnail = $gallery->cover_thumbnail;
+
     $gallery = $this->patchEntity($gallery, $data);
-    return $this->save($gallery);
+
+    if(!$gallery->hasErrors() and !$this->save($gallery))
+      throw new InternalErrorException('Não foi possivel salvar no banco de dados.');
+
+    $file = new File(WWW_ROOT . 'img' . $oldCover);
+    $file->delete();
+    $file = new File(WWW_ROOT . 'img' . $oldCoverThumbnail);
+    $file->delete();
+
+    return $gallery;
   }
 
   public function deleteGallery($id)
   {
-    $entity = $this->get($id);
+    $gallery = $this->get($id);
 
-    if(!$entity)
-      throw new NotFoundException();
-
-    return $this->delete($entity);
+    return $this->delete($gallery);
   }
 
   public function afterDelete(Event $event, Gallery $gallery, \ArrayObject $options)

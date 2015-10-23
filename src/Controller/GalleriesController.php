@@ -47,9 +47,6 @@ class GalleriesController extends AppController
 
         $cover = $image->save(WWW_ROOT . 'img/galleries/');
 
-        $data['cover'] = '';
-        $data['cover_thumbnail'] = '';
-
         if($cover) {
           $data['cover'] = 'galleries/' . $cover->getFilename();
 
@@ -69,6 +66,11 @@ class GalleriesController extends AppController
             $data['cover_thumbnail'] = 'galleries/' . $coverThumbnail->getFilename();
           }
         }
+        else {
+          $data['cover'] = '';
+          $data['cover_thumbnail'] = '';
+        }
+
         $image->close();
         $uploadedImage = new File($uploadedImage);
         $uploadedImage->delete();
@@ -77,8 +79,15 @@ class GalleriesController extends AppController
         $data['cover'] = '';
         $data['cover_thumbnail'] = '';
       }
-      $result = $this->Galleries->insert($data);
+      $result = $this->Galleries->insertGallery($data);
       if($result->hasErrors()) {
+        if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
+          $file = new File($cover->getFilepath());
+          $file->delete();
+          $file = new File($coverThumbnail->getFilepath());
+          $file->delete();
+        }
+
         $this->Flash->set($result->getErrorMessages(), ['element' => 'alert_danger']);
       }
       else {
@@ -112,10 +121,9 @@ class GalleriesController extends AppController
         );
 
         $cover = $image->save(WWW_ROOT . 'img/galleries/');
-        unset($data['cover']);
 
-        if($cover)
-          $data['cover'] = 'img/galleries/' . $cover->getFilename();
+        if($cover) {
+          $data['cover'] = 'galleries/' . $cover->getFilename();
 
           $image->resizeTo(
             Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width'),
@@ -125,44 +133,55 @@ class GalleriesController extends AppController
 
           $thumbnailImageName = 'thumb_' .
             Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width') . '_' .
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height') .
+            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height') . '_' .
             $image->getFilename();
 
           $coverThumbnail = $image->save(WWW_ROOT . 'img/galleries/', $thumbnailImageName);
-          if($coverThumbnail)
-            $data['cover_thumbnail'] = 'img/galleries/' . $coverThumbnail->getFilename();
-          else
-            unset($data['cover']);
+          if($coverThumbnail) {
+            $data['cover_thumbnail'] = 'galleries/' . $coverThumbnail->getFilename();
+          }
         }
         else {
           unset($data['cover']);
         }
-
-        $result = $this->Galleries->updateGallery($id, $data);
-
-        if($result) {
-          $this->Flash->set('Galeria editada!', ['element' => 'AppCore.alert_success']);
-        }
-        else {
-          $this->Flash->set($result->getErrorMessages(), ['element' => 'AppCore.alert_danger']);
-        }
+        $image->close();
+        $uploadedImage = new File($uploadedImage);
+        $uploadedImage->delete();
       }
-      $gallery = $this->Galleries->get($id);
-      $this->set('gallery', $gallery);
-      $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
-      $this->set('categoriesList', $this->Categories->getCategoriesAsList());
-  }
+      else {
+        unset($data['cover']);
+      }
+      $result = $this->Galleries->updateGallery($id, $data);
 
+      if($result->hasErrors()) {
+        if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
+          $file = new File($cover->getFilepath());
+          $file->delete();
+          $file = new File($coverThumbnail->getFilepath());
+          $file->delete();
+        }
+
+        $this->Flash->set($result->getErrorMessages(), ['element' => 'alert_danger']);
+      }
+      else {
+        $this->Flash->set('Galeria editada!', ['element' => 'alert_success']);
+      }
+    }
+
+    $gallery = $this->Galleries->get($id);
+    $this->set('gallery', $gallery);
+    $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
+    $this->set('categoriesList', $this->Categories->getCategoriesAsList());
+  }
 
   public function delete($id)
   {
-    $this->Galleries = TableRegistry::get('PhotoGallery.Galleries');
     $result = $this->Galleries->deleteGallery($id);
     if($result) {
-      $this->Flash->set('Galeria removida!', ['element' => 'AppCore.alert_success']);
+      $this->Flash->set('Galeria removida!', ['element' => 'alert_success']);
     }
     else {
-      $this->Flash->set('Erro ao tentar adicionar uma nova galeria.', ['element' => 'AppCore.alert_danger']);
+      $this->Flash->set('Erro interno ao tentar excluir galeria.', ['element' => 'alert_danger']);
     }
     $this->redirect(['action' => 'index']);
   }
