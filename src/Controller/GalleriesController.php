@@ -79,14 +79,13 @@ class GalleriesController extends AppController
       $data['cover_thumbnail'] = '';
     }
 
-    $result = $this->Galleries->insertNewGallery($data);
-
-    if($result) {
-      $this->Flash->set('Nova galeria adicionada!', ['element' => 'AppCore.alert_success']);
-      $this->request->data = [];
+    $result = $this->Galleries->insert($data);
+    if($result->hasErrors()) {
+      $this->Flash->set($result->getErrorMessages(), ['element' => 'alert_danger']);
     }
     else {
-      $this->Flash->set('Erro ao tentar adicionar uma nova galeria.', ['element' => 'AppCore.alert_danger']);
+      $this->request->data = [];
+      $this->Flash->set('Nova galeria adicionada!', ['element' => 'alert_success']);
     }
 
     $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
@@ -146,7 +145,7 @@ class GalleriesController extends AppController
           $this->Flash->set('Galeria editada!', ['element' => 'AppCore.alert_success']);
         }
         else {
-          $this->Flash->set('Erro ao tentar adicionar uma nova galeria.', ['element' => 'AppCore.alert_danger']);
+          $this->Flash->set($result->getErrorMessages(), ['element' => 'AppCore.alert_danger']);
         }
       }
       $gallery = $this->Galleries->get($id);

@@ -88,11 +88,6 @@ class GalleriesTable extends Table
     return $rules;
   }
 
-  /**
-   * [getGallery description]
-   * @param  [type] $id [description]
-   * @return [type]     [description]
-   */
   public function getGallery($id)
   {
     return $this->find()
@@ -105,10 +100,6 @@ class GalleriesTable extends Table
       ->first();
   }
 
-  /**
-   * [getAllGalleries description]
-   * @return [type] [description]
-   */
   public function getAllGalleries()
   {
       return $this->find()->all();
@@ -125,16 +116,20 @@ class GalleriesTable extends Table
       ->all();
   }
 
-  /**
-   * [insertNewGallery description]
-   * @param  array  $data [description]
-   * @return [type]       [description]
-   */
-  public function insertNewGallery(array $data)
+
+  public function insert(array $data)
   {
     $entity = $this->newEntity($data);
 
-    return $this->save($entity);
+    if(!$entity->hasErrors() and !$this->save($entity))
+      throw new InternalErrorException('Não foi possivel salvar no banco de dados.');
+
+    return $entity;
+  }
+
+  public function insertNewGallery(array $data)
+  {
+    return $this->insert($data);
   }
 
   public function updateGallery($id, $data)
@@ -145,11 +140,6 @@ class GalleriesTable extends Table
     return $this->save($gallery);
   }
 
-  /**
-   * [deleteGallery description]
-   * @param  [type] $id [description]
-   * @return [type]     [description]
-   */
   public function deleteGallery($id)
   {
     $entity = $this->get($id);
