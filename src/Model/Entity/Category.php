@@ -1,7 +1,7 @@
 <?php
 namespace PhotoGallery\Model\Entity;
 
-use Cake\ORM\Entity;
+use AppCore\Model\Entity\Entity;
 
 /**
  * Category Entity.

@@ -2,7 +2,7 @@
 namespace PhotoGallery\Model\Entity;
 
 use Cake\Collection\Collection;
-use Cake\ORM\Entity;
+use AppCore\Model\Entity\Entity;
 use AppCore\Lib\ImageUploaderConfig;
 use AppCore\Lib\Utility\StringUtility;
 
@@ -52,10 +52,6 @@ class Gallery extends Entity
       }
     }
 
-    /**
-     * [getPhotoConfig description]
-     * @return [type] [description]
-     */
     public function getPhotoConfig()
     {
       $config = new ImageUploaderConfig();
