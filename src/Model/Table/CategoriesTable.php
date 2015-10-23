@@ -48,47 +48,28 @@ class CategoriesTable extends Table
             ->add('id', 'valid', ['rule' => 'numeric'])
             ->allowEmpty('id', 'create')
             ->requirePresence('name', 'create')
-            ->notEmpty('name')
+            ->notEmpty('name', 'Por favor, insira um nome para a categoria')
             ->add('sort_order', 'valid', ['rule' => 'numeric'])
             ->allowEmpty('sort_order');
 
         return $validator;
     }
 
-    /**
-     * [buildRules description]
-     * @param  RulesChecker $rules [description]
-     * @return [type]              [description]
-     */
     public function buildRules(RulesChecker $rules) {
         $rules->add($rules->isUnique(['slug'], 'Categories'));
         return $rules;
     }
 
-    /**
-     * [insertNewCategory description]
-     * @param  array  $data [description]
-     * @return [type]       [description]
-     */
     public function insertNewCategory(array $data) {
         $entity = $this->newEntity($data);
 
         return $this->save($entity);
     }
 
-    /**
-     * [getAllCategories description]
-     * @return [type] [description]
-     */
     public function getAllCategories() {
         return $this->find()->all();
     }
 
-    /**
-     * [deleteCategory description]
-     * @param  [type] $id [description]
-     * @return [type]     [description]
-     */
     public function deleteCategory($id) {
         $entity = $this->get($id);
 
@@ -98,21 +79,12 @@ class CategoriesTable extends Table
         return $this->delete($entity);
     }
 
-    /**
-     * [getCategoriesAsList description]
-     * @todo Implementar testes.
-     * @return [type] [description]
-     */
     public function getCategoriesAsList() {
         return $this->find('list',
             ['keyField' => 'id', 'valueField' => 'name'])
             ->toArray();
     }
 
-    /**
-     * [getAllCategoriesActive description]
-     * @return [type] [description]
-     */
     public function getAllActiveCategories() {
         $query = $this->find();
 
