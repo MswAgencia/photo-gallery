@@ -52,16 +52,6 @@ class Gallery extends Entity
       }
     }
 
-    public function getPhotoConfig()
-    {
-      $config = new ImageUploaderConfig();
-      $config->width = $this->photo_width;
-      $config->height = $this->photo_height;
-      $config->mode = $this->photo_resize_mode;
-
-      return $config;
-    }
-
     public function getPhotosSorted() {
       if(isset($this->photos) and !empty($this->photos)) {
         $photosCollection = new Collection($this->photos);
