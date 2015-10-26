@@ -50,7 +50,7 @@ class PhotosController extends AppController
 
         if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.apply_watermark_on_photos')) {
           $watermark = new Image(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.watermark_filepath'));
-          $photo = $watermark->placeOver($photo, 20, 20);
+          $photo = $watermark->placeOver($photo, 20, $photo->getHeight() - 20);
           $watermark->close();
         }
 
