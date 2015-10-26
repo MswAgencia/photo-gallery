@@ -19,6 +19,8 @@ $config['WebImobApp.Plugins.PhotoGallery.Settings'] = [
 		'gallery_cover_thumbnail_width' => 250,
 		'gallery_cover_thumbnail_height' => 250,
 		'gallery_cover_thumbnail_resize_mode' => 'resizeCrop',
+		'apply_watermark_on_photos' => true,
+		'watermark_filepath' => WWW_ROOT . 'img/watermark.png'
 	],
 	'Image' => [
 		'Photos' => [
