@@ -45,14 +45,21 @@ class PhotosController extends AppController
 
         $image = new Image($uploadedImage);
         $image->resizeTo($gallery->photo_width, $gallery->photo_height, $gallery->photo_resize_mode);
+
         $photo = $image->save(WWW_ROOT . 'img/galleries/photos/');
+
+        if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.apply_watermark_on_photos')) {
+          $watermark = new Image(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.watermark_filepath'));
+          $photo = $watermark->placeOver($photo, 20, 20);
+          $watermark->close();
+        }
 
         foreach(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Image.Photos.Thumbnails') as $ref => $config) {
           $image->resizeTo($config['width'], $config['height'], $config['mode']);
-          $thumb = $image->save(WWW_ROOT . 'img/galleries/photos/');
-          $thumbs[] = ['ref' => $ref, 'path' => 'img/galleries/photos/' . $thumb->getFilename()];
+          $thumb = $image->save(WWW_ROOT . 'img/galleries/photos/', 'thumb_' . $image->getFilename());
+          $thumbs[] = ['ref' => $ref, 'path' => 'galleries/photos/' . $thumb->getFilename()];
         }
-        $photos[] = ['photo' => 'img/galleries/photos/' . $photo->getFilename(), 'thumbnails' => $thumbs];
+        $photos[] = ['photo' => 'galleries/photos/' . $photo->getFilename(), 'thumbnails' => $thumbs];
       }
 
       if($this->Photos->addNewPhotosToGallery($gallery->id, $photos)) {
