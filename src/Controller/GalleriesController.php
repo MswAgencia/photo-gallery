@@ -37,48 +37,53 @@ class GalleriesController extends AppController
           ->setDestination(TMP . 'uploads');
 
         $uploadedImage = $uploader->upload($data['cover']);
-        $image = new Image($uploadedImage);
-
-        $image->resizeTo(
-          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
-          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
-          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_resize_mode')
-        );
-
-        $cover = $image->save(WWW_ROOT . 'img/galleries/');
-
-        if($cover) {
-          $data['cover'] = 'galleries/' . $cover->getFilename();
+        $data['cover'] = '';
+        $data['cover_thumbnail'] = '';
+        if($uploadedImage) {
+          $image = new Image($uploadedImage);
 
           $image->resizeTo(
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width'),
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height'),
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_resize_mode')
+            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
+            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
+            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_resize_mode')
           );
 
-          $thumbnailImageName = 'thumb_' .
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width') . '_' .
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height') . '_' .
-            $image->getFilename();
+          $cover = $image->save(WWW_ROOT . 'img/galleries/');
 
-          $coverThumbnail = $image->save(WWW_ROOT . 'img/galleries/', $thumbnailImageName);
-          if($coverThumbnail) {
-            $data['cover_thumbnail'] = 'galleries/' . $coverThumbnail->getFilename();
+          if($cover) {
+            $data['cover'] = 'galleries/' . $cover->getFilename();
+
+            $image->resizeTo(
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width'),
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height'),
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_resize_mode')
+            );
+
+            $thumbnailImageName = 'thumb_' .
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width') . '_' .
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height') . '_' .
+              $image->getFilename();
+
+            $coverThumbnail = $image->save(WWW_ROOT . 'img/galleries/', $thumbnailImageName);
+            if($coverThumbnail) {
+              $data['cover_thumbnail'] = 'galleries/' . $coverThumbnail->getFilename();
+            }
           }
-        }
-        else {
-          $data['cover'] = '';
-          $data['cover_thumbnail'] = '';
-        }
+          else {
+            $data['cover'] = '';
+            $data['cover_thumbnail'] = '';
+          }
 
-        $image->close();
-        $uploadedImage = new File($uploadedImage);
-        $uploadedImage->delete();
+          $image->close();
+          $uploadedImage = new File($uploadedImage);
+          $uploadedImage->delete();
+        }
       }
       else {
         $data['cover'] = '';
         $data['cover_thumbnail'] = '';
       }
+      
       $result = $this->Galleries->insertGallery($data);
       if($result->hasErrors()) {
         if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
@@ -112,41 +117,45 @@ class GalleriesController extends AppController
             ->setDestination(TMP . 'uploads');
 
         $uploadedImage = $uploader->upload($data['cover']);
-        $image = new Image($uploadedImage);
+        unset($data['cover']);
 
-        $image->resizeTo(
-          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
-          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
-          Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_resize_mode')
-        );
-
-        $cover = $image->save(WWW_ROOT . 'img/galleries/');
-
-        if($cover) {
-          $data['cover'] = 'galleries/' . $cover->getFilename();
+        if($uploadedImage) {
+          $image = new Image($uploadedImage);
 
           $image->resizeTo(
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width'),
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height'),
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_resize_mode')
+            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
+            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
+            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_resize_mode')
           );
 
-          $thumbnailImageName = 'thumb_' .
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width') . '_' .
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height') . '_' .
-            $image->getFilename();
+          $cover = $image->save(WWW_ROOT . 'img/galleries/');
 
-          $coverThumbnail = $image->save(WWW_ROOT . 'img/galleries/', $thumbnailImageName);
-          if($coverThumbnail) {
-            $data['cover_thumbnail'] = 'galleries/' . $coverThumbnail->getFilename();
+          if($cover) {
+            $data['cover'] = 'galleries/' . $cover->getFilename();
+
+            $image->resizeTo(
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width'),
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height'),
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_resize_mode')
+            );
+
+            $thumbnailImageName = 'thumb_' .
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width') . '_' .
+              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height') . '_' .
+              $image->getFilename();
+
+            $coverThumbnail = $image->save(WWW_ROOT . 'img/galleries/', $thumbnailImageName);
+            if($coverThumbnail) {
+              $data['cover_thumbnail'] = 'galleries/' . $coverThumbnail->getFilename();
+            }
           }
+          else {
+            unset($data['cover']);
+          }
+          $image->close();
+          $uploadedImage = new File($uploadedImage);
+          $uploadedImage->delete();
         }
-        else {
-          unset($data['cover']);
-        }
-        $image->close();
-        $uploadedImage = new File($uploadedImage);
-        $uploadedImage->delete();
       }
       else {
         unset($data['cover']);
