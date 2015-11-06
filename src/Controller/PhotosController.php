@@ -21,7 +21,7 @@ class PhotosController extends AppController
 
   public function manage($id)
   {
-    $gallery = $this->Galleries->getGallery($id);
+    $gallery = $this->Galleries->get($id, ['contain' => 'Photos.PhotosThumbnails.Photos']);
     $this->set('gallery', $gallery);
   }
 
