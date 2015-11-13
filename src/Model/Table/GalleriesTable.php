@@ -172,7 +172,7 @@ class GalleriesTable extends Table
   public function beforeSave(Event $event, Gallery $gallery, \ArrayObject $options)
   {
     if(!$gallery->isNew()) {
-      $oldGallery = $this->get($id);
+      $oldGallery = $this->get($gallery->id);
       $file = new File(WWW_ROOT . 'img/' . $oldGallery->cover);
       $file->delete();
 
