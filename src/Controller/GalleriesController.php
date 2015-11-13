@@ -83,7 +83,7 @@ class GalleriesController extends AppController
         $data['cover'] = '';
         $data['cover_thumbnail'] = '';
       }
-      
+
       $result = $this->Galleries->insertGallery($data);
       if($result->hasErrors()) {
         if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
@@ -160,9 +160,11 @@ class GalleriesController extends AppController
       else {
         unset($data['cover']);
       }
-      $result = $this->Galleries->updateGallery($id, $data);
 
-      if($result->hasErrors()) {
+      $gallery = $this->Galleries->get($id);
+      $gallery = $this->Galleries->patchEntity($gallery, $data);
+
+      if($gallery->hasErrors()) {
         if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
           $file = new File($cover->getFilepath());
           $file->delete();
@@ -170,9 +172,9 @@ class GalleriesController extends AppController
           $file->delete();
         }
 
-        $this->Flash->set($result->getErrorMessages(), ['element' => 'alert_danger']);
+        $this->Flash->set($gallery->getErrorMessages(), ['element' => 'alert_danger']);
       }
-      else {
+      elseif($this->Galleries->save($gallery)) {
         $this->Flash->set('Galeria editada!', ['element' => 'alert_success']);
       }
     }

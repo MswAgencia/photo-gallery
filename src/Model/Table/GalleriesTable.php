@@ -136,7 +136,7 @@ class GalleriesTable extends Table
 
     $gallery = $this->patchEntity($gallery, $data);
 
-    if(!$gallery->hasErrors() and !$this->save($gallery))
+    if(!$this->save($gallery))
       throw new InternalErrorException('Não foi possivel salvar no banco de dados.');
 
     $file = new File(WWW_ROOT . 'img/' . $oldCover);
@@ -171,6 +171,14 @@ class GalleriesTable extends Table
 
   public function beforeSave(Event $event, Gallery $gallery, \ArrayObject $options)
   {
+    if(!$gallery->isNew()) {
+      $oldGallery = $this->get($id);
+      $file = new File(WWW_ROOT . 'img/' . $oldGallery->cover);
+      $file->delete();
+
+      $file = new File(WWW_ROOT . 'img/' . $oldGallery->cover_thumbnail);
+      $file->delete();
+    }
     Cache::clear(false, 'photo_gallery_cache');
   }
 }
