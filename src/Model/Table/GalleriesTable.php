@@ -11,6 +11,7 @@ use Cake\Cache\Cache;
 use Cake\Event\Event;
 use Cake\Filesystem\File;
 use Cake\Core\Configure;
+use Cake\Log\Log;
 
 /**
  * Galleries Model
@@ -139,11 +140,6 @@ class GalleriesTable extends Table
     if(!$this->save($gallery))
       throw new InternalErrorException('Não foi possivel salvar no banco de dados.');
 
-    $file = new File(WWW_ROOT . 'img/' . $oldCover);
-    $file->delete();
-    $file = new File(WWW_ROOT . 'img/' . $oldCoverThumbnail);
-    $file->delete();
-
     return $gallery;
   }
 
@@ -171,14 +167,14 @@ class GalleriesTable extends Table
 
   public function beforeSave(Event $event, Gallery $gallery, \ArrayObject $options)
   {
-    if(!$gallery->isNew()) {
-      $oldGallery = $this->get($gallery->id);
-      $file = new File(WWW_ROOT . 'img/' . $oldGallery->cover);
+    if(!$gallery->isNew() and $gallery->dirty('cover') and $gallery->dirty('cover_thumbnail')) {
+      $file = new File(WWW_ROOT . 'img/' . $gallery->getOriginal('cover'));
       $file->delete();
 
-      $file = new File(WWW_ROOT . 'img/' . $oldGallery->cover_thumbnail);
+      $file = new File(WWW_ROOT . 'img/' . $gallery->getOriginal('cover_thumbnail'));
       $file->delete();
     }
+
     Cache::clear(false, 'photo_gallery_cache');
   }
 }
