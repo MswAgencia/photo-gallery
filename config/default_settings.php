@@ -1,7 +1,7 @@
 <?php
 use Cake\Core\Configure;
 
-$config['WebImobApp.Plugins.PhotoGallery.Settings'] = [
+$config['MswAgencia.Plugins.PhotoGallery.Settings'] = [
 	'General' => ['display_panel_menu' => true],
 	'Template' => [
 		'layout' => Configure::read('WebImobApp.Plugins.ControlPanel.Settings.Template.layout'),
