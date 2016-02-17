@@ -1,10 +1,13 @@
 <?php
 
-use AppCore\Lib\PluginStarter;
+use Cake\Core\Configure;
 use Cake\Cache\Cache;
 
-$starter = new PluginStarter();
-$starter->load('PhotoGallery');
+
+if(file_exists(CONFIG . '/banners_manager.php'))
+  Configure::load(CONFIG . '/banners_manager.php');
+else
+  Configure::load(dirname(__FILE__) . '/default_settings.php');
 
 Cache::config('photo_gallery_cache', [
     'className' => 'Cake\Cache\Engine\FileEngine',
