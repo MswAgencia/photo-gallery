@@ -8,6 +8,8 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use PhotoGallery\Model\Entity\Category;
 use Cake\Cache\Cache;
+use Cake\Event\Event;
+use Cake\Filesystem\File;
 
 /**
  * Categories Model
@@ -46,71 +48,43 @@ class CategoriesTable extends Table
             ->add('id', 'valid', ['rule' => 'numeric'])
             ->allowEmpty('id', 'create')
             ->requirePresence('name', 'create')
-            ->notEmpty('name')
+            ->notEmpty('name', 'Por favor, insira um nome para a categoria')
             ->add('sort_order', 'valid', ['rule' => 'numeric'])
             ->allowEmpty('sort_order');
 
         return $validator;
     }
 
-    /**
-     * [buildRules description]
-     * @param  RulesChecker $rules [description]
-     * @return [type]              [description]
-     */
     public function buildRules(RulesChecker $rules) {
         $rules->add($rules->isUnique(['slug'], 'Categories'));
         return $rules;
     }
 
-    /**
-     * [insertNewCategory description]
-     * @param  array  $data [description]
-     * @return [type]       [description]
-     */
     public function insertNewCategory(array $data) {
         $entity = $this->newEntity($data);
 
         return $this->save($entity);
     }
 
-    /**
-     * [getAllCategories description]
-     * @return [type] [description]
-     */
     public function getAllCategories() {
         return $this->find()->all();
     }
 
-    /**
-     * [deleteCategory description]
-     * @param  [type] $id [description]
-     * @return [type]     [description]
-     */
     public function deleteCategory($id) {
         $entity = $this->get($id);
-        
+
         if(!$entity)
             throw new NotFoundException();
 
         return $this->delete($entity);
     }
 
-    /**
-     * [getCategoriesAsList description]
-     * @todo Implementar testes.
-     * @return [type] [description]
-     */
     public function getCategoriesAsList() {
-        return $this->find('list', 
+        return $this->find('list',
             ['keyField' => 'id', 'valueField' => 'name'])
             ->toArray();
     }
 
-    /**
-     * [getAllCategoriesActive description]
-     * @return [type] [description]
-     */
     public function getAllActiveCategories() {
         $query = $this->find();
 
@@ -118,8 +92,8 @@ class CategoriesTable extends Table
             $query->contain(['Galleries.Videos']);
 
         return $query->contain([
-                'Galleries' => function ($q) { return $q->where(['Galleries.status' => 1]); }, 
-                'Galleries.Photos' => function ($q) { return $q->where(['Photos.status' => 1])->order(['Photos.sort_order' => 'ASC']); }, 
+                'Galleries' => function ($q) { return $q->where(['Galleries.status' => 1]); },
+                'Galleries.Photos' => function ($q) { return $q->where(['Photos.status' => 1])->order(['Photos.sort_order' => 'ASC']); },
                 'Galleries.Photos.PhotosThumbnails'])
             ->where(['Categories.status' => 1])
             ->cache(function ($q){
@@ -138,7 +112,7 @@ class CategoriesTable extends Table
 
         $query->contain($contain);
         $query->matching('Galleries', function ($q) { return $q->where(['Galleries.status' => 1]); })
-            ->matching('Galleries.Photos', function ($q) { return $q->where(['Photos.status' => 1]); }) 
+            ->matching('Galleries.Photos', function ($q) { return $q->where(['Photos.status' => 1]); })
             ->where(['Categories.status' => 1, 'Categories.slug' => $id])
             ->cache(function ($q){
                 return 'pg_get_category-' . md5(serialize($q->clause('where')));

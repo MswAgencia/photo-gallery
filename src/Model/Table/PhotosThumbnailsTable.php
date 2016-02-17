@@ -6,6 +6,8 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use PhotoGallery\Model\Entity\PhotosThumbnail;
+use Cake\Event\Event;
+use Cake\Filesystem\File;
 
 /**
  * PhotosThumbnails Model
@@ -26,7 +28,8 @@ class PhotosThumbnailsTable extends Table
         $this->primaryKey('id');
         $this->belongsTo('Photos', [
             'foreignKey' => 'photo_id',
-            'className' => 'PhotoGallery.Photos'
+            'className' => 'PhotoGallery.Photos',
+            'dependent' => true
         ]);
     }
 
@@ -50,5 +53,14 @@ class PhotosThumbnailsTable extends Table
             ->notEmpty('ref');
 
         return $validator;
+    }
+
+    public function afterDelete(Event $event, PhotoThumbnail $photo, \ArrayObject $config)
+    {
+      if(!empty($photo->path)) {
+        $file = new File(WWW_ROOT . 'img' . DS . $photo->path);
+        $file->delete();
+        $file->close();
+      }
     }
 }

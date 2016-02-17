@@ -5,13 +5,13 @@
 			echo $this->Flash->render();
 
 			echo $this->Html->tag('table', null, ['class' => 'table stripped table-bordered realties-table']);
-			
+
 			echo $this->Html->tag('thead', $this->Html->tableHeaders($tableHeaders));
 			$cells = [];
 
 			foreach($data as $gallery){
 				$cell = [];
-				$cell[] = 'Sem Imagem';
+				$cell[] = $this->Html->image($gallery->getThumbnail(), ['class' => 'img-responsive']);
 				$cell[] = $gallery->name;
 				$cell[] = $gallery->getStatusAsString();
 				$options = [];
