@@ -14,6 +14,6 @@ class AppController extends BaseController
 	 */
 	public function initialize(){
 		parent::initialize();
-    $this->viewBuilder()->layout(Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Template.layout'));
+    $this->viewBuilder()->helpers(['Form' => ['className' => 'MswAgencia.Form']]);
 	}
 }

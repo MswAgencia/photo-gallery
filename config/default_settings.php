@@ -3,9 +3,6 @@ use Cake\Core\Configure;
 
 $config['MswAgencia.Plugins.PhotoGallery.Settings'] = [
 	'General' => ['display_panel_menu' => true],
-	'Template' => [
-		'layout' => Configure::read('MswAgencia.Plugins.ControlPanel.Settings.Template.layout'),
-		],
 	'Options' => [
 		'use_order_field' => false,
 		'use_image' => false,
