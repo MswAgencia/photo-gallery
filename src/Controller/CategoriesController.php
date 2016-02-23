@@ -5,19 +5,8 @@ use PhotoGallery\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 
-/**
- * Categories Controller
- *
- * @property \PhotoGallery\Model\Table\CategoriesTable $Categories
- */
 class CategoriesController extends AppController
 {
-    public $helpers = ['AppCore.Form', 'DefaultAdminTheme.PanelMenu'];
-
-    /**
-     * [index description]
-     * @return [type] [description]
-     */
     public function index() {
       $this->Categories = TableRegistry::get('PhotoGallery.Categories');
       $categories = $this->Categories->getAllCategories();
@@ -27,9 +16,6 @@ class CategoriesController extends AppController
       $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
     }
 
-    /**
-     * [add description]
-     */
     public function add()
     {
       if($this->request->is('post')) {

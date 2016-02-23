@@ -4,8 +4,7 @@ use Cake\Core\Configure;
 $config['MswAgencia.Plugins.PhotoGallery.Settings'] = [
 	'General' => ['display_panel_menu' => true],
 	'Template' => [
-		'layout' => Configure::read('WebImobApp.Plugins.ControlPanel.Settings.Template.layout'),
-		'theme' => Configure::read('WebImobApp.Plugins.ControlPanel.Settings.Template.theme')
+		'layout' => Configure::read('MswAgencia.Plugins.ControlPanel.Settings.Template.layout'),
 		],
 	'Options' => [
 		'use_order_field' => false,

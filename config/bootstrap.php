@@ -3,9 +3,8 @@
 use Cake\Core\Configure;
 use Cake\Cache\Cache;
 
-
-if(file_exists(CONFIG . '/banners_manager.php'))
-  Configure::load(CONFIG . '/banners_manager.php');
+if(file_exists(CONFIG . '/photo_gallery.php'))
+  Configure::load(CONFIG . '/photo_gallery.php');
 else
   Configure::load(dirname(__FILE__) . '/default_settings.php');
 

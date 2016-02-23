@@ -6,12 +6,10 @@ use PhotoGallery\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use SimpleFileUploader\FileUploader;
-use AppCore\Lib\Image\Image;
+use MswAgencia\Image\Image;
 
 class PhotosController extends AppController
 {
-  public $helpers = ['AppCore.Form', 'DefaultAdminTheme.PanelMenu'];
-
   public function initialize()
   {
     parent::initialize();
@@ -48,13 +46,13 @@ class PhotosController extends AppController
 
         $photo = $image->save(WWW_ROOT . 'img/galleries/photos/');
 
-        if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.apply_watermark_on_photos')) {
-          $watermark = new Image(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.watermark_filepath'));
+        if(Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.apply_watermark_on_photos')) {
+          $watermark = new Image(Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.watermark_filepath'));
           $photo = $watermark->placeOver($photo, 20, $photo->getHeight() - (20 + $watermark->getHeight()));
           $watermark->close();
         }
 
-        foreach(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Image.Photos.Thumbnails') as $ref => $config) {
+        foreach(Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Image.Photos.Thumbnails') as $ref => $config) {
           $image->resizeTo($config['width'], $config['height'], $config['mode']);
           $thumb = $image->save(WWW_ROOT . 'img/galleries/photos/', 'thumb_' . $image->getFilename());
           $thumbs[] = ['ref' => $ref, 'path' => 'galleries/photos/' . $thumb->getFilename()];

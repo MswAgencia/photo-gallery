@@ -14,7 +14,6 @@ class AppController extends BaseController
 	 */
 	public function initialize(){
 		parent::initialize();
-		$this->theme = Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Template.theme');
-		$this->layout = Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Template.layout');
+    $this->viewBuilder()->layout(Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Template.layout'));
 	}
 }

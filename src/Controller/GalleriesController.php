@@ -5,13 +5,11 @@ use PhotoGallery\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 use SimpleFileUploader\FileUploader;
-use AppCore\Lib\Image\Image;
+use MswAgencia\Image\Image;
 use Cake\Filesystem\File;
 
 class GalleriesController extends AppController
 {
-  public $helpers = ['AppCore.Form', 'DefaultAdminTheme.PanelMenu'];
-
   public function initialize()
   {
     parent::initialize();
@@ -31,7 +29,7 @@ class GalleriesController extends AppController
     if($this->request->is('post')) {
       $data = $this->request->data;
 
-      if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
+      if(Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.use_image')) {
         $uploader = new FileUploader();
         $uploader->allowTypes('image/jpg', 'image/jpeg', 'image/png')
           ->setDestination(TMP . 'uploads');
@@ -43,9 +41,9 @@ class GalleriesController extends AppController
           $image = new Image($uploadedImage);
 
           $image->resizeTo(
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_resize_mode')
+            Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
+            Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
+            Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_resize_mode')
           );
 
           $cover = $image->save(WWW_ROOT . 'img/galleries/');
@@ -54,14 +52,14 @@ class GalleriesController extends AppController
             $data['cover'] = 'galleries/' . $cover->getFilename();
 
             $image->resizeTo(
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width'),
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height'),
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_resize_mode')
+              Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width'),
+              Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height'),
+              Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_resize_mode')
             );
 
             $thumbnailImageName = 'thumb_' .
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width') . '_' .
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height') . '_' .
+              Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width') . '_' .
+              Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height') . '_' .
               $image->getFilename();
 
             $coverThumbnail = $image->save(WWW_ROOT . 'img/galleries/', $thumbnailImageName);
@@ -86,7 +84,7 @@ class GalleriesController extends AppController
 
       $result = $this->Galleries->insertGallery($data);
       if($result->hasErrors()) {
-        if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
+        if(Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.use_image')) {
           $file = new File($cover->getFilepath());
           $file->delete();
           $file = new File($coverThumbnail->getFilepath());
@@ -101,7 +99,7 @@ class GalleriesController extends AppController
       }
     }
 
-    $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
+    $this->set('options', Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options'));
     $this->set('categoriesList', $this->Categories->getCategoriesAsList());
   }
 
@@ -111,7 +109,7 @@ class GalleriesController extends AppController
     if($this->request->is('post')) {
       $data = $this->request->data;
 
-      if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
+      if(Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.use_image')) {
         $uploader = new FileUploader();
         $uploader->allowTypes('image/jpg', 'image/jpeg', 'image/png')
             ->setDestination(TMP . 'uploads');
@@ -123,9 +121,9 @@ class GalleriesController extends AppController
           $image = new Image($uploadedImage);
 
           $image->resizeTo(
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
-            Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_resize_mode')
+            Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_width'),
+            Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_height'),
+            Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_resize_mode')
           );
 
           $cover = $image->save(WWW_ROOT . 'img/galleries/');
@@ -134,14 +132,14 @@ class GalleriesController extends AppController
             $data['cover'] = 'galleries/' . $cover->getFilename();
 
             $image->resizeTo(
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width'),
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height'),
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_resize_mode')
+              Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width'),
+              Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height'),
+              Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_resize_mode')
             );
 
             $thumbnailImageName = 'thumb_' .
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width') . '_' .
-              Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height') . '_' .
+              Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_width') . '_' .
+              Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.gallery_cover_thumbnail_height') . '_' .
               $image->getFilename();
 
             $coverThumbnail = $image->save(WWW_ROOT . 'img/galleries/', $thumbnailImageName);
@@ -165,7 +163,7 @@ class GalleriesController extends AppController
       $gallery = $this->Galleries->patchEntity($gallery, $data);
 
       if($gallery->hasErrors()) {
-        if(Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options.use_image')) {
+        if(Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options.use_image')) {
           $file = new File($cover->getFilepath());
           $file->delete();
           $file = new File($coverThumbnail->getFilepath());
@@ -181,7 +179,7 @@ class GalleriesController extends AppController
 
     $gallery = $this->Galleries->get($id);
     $this->set('gallery', $gallery);
-    $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
+    $this->set('options', Configure::read('MswAgencia.Plugins.PhotoGallery.Settings.Options'));
     $this->set('categoriesList', $this->Categories->getCategoriesAsList());
   }
 
