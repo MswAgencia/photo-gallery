@@ -91,11 +91,11 @@ class GalleriesController extends AppController
           $file->delete();
         }
 
-        $this->Flash->set($result->getErrorMessages(), ['element' => 'alert_danger']);
+        $this->Flash->set($result->getErrorMessages(), ['element' => 'ControlPanel.alert_danger']);
       }
       else {
         $this->request->data = [];
-        $this->Flash->set('Nova galeria adicionada!', ['element' => 'alert_success']);
+        $this->Flash->set('Nova galeria adicionada!', ['element' => 'ControlPanel.alert_success']);
       }
     }
 
@@ -170,10 +170,10 @@ class GalleriesController extends AppController
           $file->delete();
         }
 
-        $this->Flash->set($gallery->getErrorMessages(), ['element' => 'alert_danger']);
+        $this->Flash->set($gallery->getErrorMessages(), ['element' => 'ControlPanel.alert_danger']);
       }
       elseif($this->Galleries->save($gallery)) {
-        $this->Flash->set('Galeria editada!', ['element' => 'alert_success']);
+        $this->Flash->set('Galeria editada!', ['element' => 'ControlPanel.alert_success']);
       }
     }
 
@@ -187,10 +187,10 @@ class GalleriesController extends AppController
   {
     $result = $this->Galleries->deleteGallery($id);
     if($result) {
-      $this->Flash->set('Galeria removida!', ['element' => 'alert_success']);
+      $this->Flash->set('Galeria removida!', ['element' => 'ControlPanel.alert_success']);
     }
     else {
-      $this->Flash->set('Erro interno ao tentar excluir galeria.', ['element' => 'alert_danger']);
+      $this->Flash->set('Erro interno ao tentar excluir galeria.', ['element' => 'ControlPanel.alert_danger']);
     }
     $this->redirect(['action' => 'index']);
   }

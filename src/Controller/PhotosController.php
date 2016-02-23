@@ -61,10 +61,10 @@ class PhotosController extends AppController
       }
 
       if($this->Photos->addNewPhotosToGallery($gallery->id, $photos)) {
-        $this->Flash->set("{$uploadedPhotosCounter} foto(s) foram adicionadas", ['element' => 'AppCore.alert_success']);
+        $this->Flash->set("{$uploadedPhotosCounter} foto(s) foram adicionadas", ['element' => 'ControlPanel.alert_success']);
       }
       else {
-        $this->Flash->set('Houve um erro ao tentar adicionar novas fotos.', ['element' => 'AppCore.alert_danger']);
+        $this->Flash->set('Houve um erro ao tentar adicionar novas fotos.', ['element' => 'ControlPanel.alert_danger']);
       }
     }
     $this->redirect("/interno/galeria-de-fotos/galerias/{$id}/fotos/");
@@ -92,7 +92,7 @@ class PhotosController extends AppController
     $photosTable = TableRegistry::get('PhotoGallery.Photos');
     $photo = $photosTable->get($photo_id);
     if($photosTable->delete($photo)) {
-      $this->Flash->set('Foto deletada!', ['element' => 'AppCore.alert_success']);
+      $this->Flash->set('Foto deletada!', ['element' => 'ControlPanel.alert_success']);
     }
     $this->redirect("/interno/galeria-de-fotos/galerias/{$id}/fotos/");
   }

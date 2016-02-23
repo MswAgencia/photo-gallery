@@ -24,10 +24,10 @@ class CategoriesController extends AppController
         $result = $this->Categories->insertNewCategory($data);
 
         if($result) {
-            $this->Flash->set('Nova categoria adicionada!', ['element' => 'alert_success']);
+            $this->Flash->set('Nova categoria adicionada!', ['element' => 'ControlPanel.alert_success']);
         }
         else {
-            $this->Flash->set('Erro ao tentar adicionar uma nova categoria.', ['element' => 'alert_danger']);
+            $this->Flash->set('Erro ao tentar adicionar uma nova categoria.', ['element' => 'ControlPanel.alert_danger']);
         }
       }
       $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
@@ -44,15 +44,15 @@ class CategoriesController extends AppController
 
           $category = $this->Categories->patchEntity($category, $data);
           if($this->Categories->save($category))
-              $this->Flash->set('Categoria editada!', ['element' => 'alert_success']);
+              $this->Flash->set('Categoria editada!', ['element' => 'ControlPanel.alert_success']);
           else
-              $this->Flash->set('Não foi possível editar a categoria!', ['element' => 'alert_danger']);
+              $this->Flash->set('Não foi possível editar a categoria!', ['element' => 'ControlPanel.alert_danger']);
         }
         $this->set('category', $this->Categories->get($id));
         $this->set('options', Configure::read('WebImobApp.Plugins.PhotoGallery.Settings.Options'));
       }
       catch(\Exception $e) {
-        $this->Flash->set('Categoria inexistente.', ['element' => 'alert_danger']);
+        $this->Flash->set('Categoria inexistente.', ['element' => 'ControlPanel.alert_danger']);
         $this->redirect(['action' => 'index']);
       }
     }
@@ -62,10 +62,10 @@ class CategoriesController extends AppController
       $result = $this->Categories->deleteCategory($id);
 
       if($result) {
-        $this->Flash->set('Categoria removida!', ['element' => 'alert_success']);
+        $this->Flash->set('Categoria removida!', ['element' => 'ControlPanel.alert_success']);
       }
       else {
-        $this->Flash->set('Erro ao tentar adicionar uma nova categoria.', ['element' => 'alert_danger']);
+        $this->Flash->set('Erro ao tentar adicionar uma nova categoria.', ['element' => 'ControlPanel.alert_danger']);
       }
       $this->redirect(['action' => 'index']);
     }
