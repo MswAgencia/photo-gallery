@@ -1,6 +1,6 @@
 <?php
 
-namespace AppCore\Model\Entity;
+namespace PhotoGallery\Model\Entity;
 
 use Cake\ORM\Entity as CakeEntity;
 use Cake\Utility\Hash;
@@ -10,7 +10,7 @@ class Entity extends CakeEntity {
   public function hasErrors()
   {
     if(count($this->errors()) > 0)
-    return true;
+      return true;
     return false;
   }
 
@@ -18,7 +18,7 @@ class Entity extends CakeEntity {
   {
     if(!$this->hasErrors())
       return false;
-      
+
     $messages = Hash::extract($this->errors(), '{s}.{s}');
     return $messages;
   }
