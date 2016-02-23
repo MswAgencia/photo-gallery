@@ -13,18 +13,18 @@ class Photo extends Entity
   public function getStatusAsString() {
     switch($this->status) {
       case 0:
-      return 'Inativo';
+        return 'Inativo';
       case 1:
-      return 'Ativo';
+        return 'Ativo';
       default:
-      return 'Inválido / Não definido';
+        return 'Inválido / Não definido';
     }
   }
 
   public function getPainelThumbnail() {
     foreach($this->photos_thumbnails as $thumbnail) {
       if($thumbnail->ref === 'painel_thumbnail')
-      return $thumbnail;
+        return $thumbnail;
     }
   }
 

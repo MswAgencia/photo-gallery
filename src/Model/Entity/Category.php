@@ -2,15 +2,14 @@
 namespace PhotoGallery\Model\Entity;
 
 use PhotoGallery\Model\Entity\Entity;
+use Cake\Utility\Inflector;
 
 class Category extends Entity
 {
 
   protected $_accessible = [
-    'id' => true,
-    'name' => true,
-    'sort_order' => true,
-    'status' => true
+    '*' => true,
+    'id' => false
   ];
 
   protected function _setName($name)
@@ -26,11 +25,11 @@ class Category extends Entity
   {
     switch($this->status) {
       case 0:
-      return 'Inativo';
+        return 'Inativo';
       case 1:
-      return 'Ativo';
+        return 'Ativo';
       default:
-      return 'Inválido / Não definido';
+        return 'Inválido / Não definido';
     }
   }
 

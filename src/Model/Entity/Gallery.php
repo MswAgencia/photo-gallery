@@ -26,11 +26,11 @@ class Gallery extends Entity
   {
     switch($this->status) {
       case 0:
-      return 'Inativo';
+        return 'Inativo';
       case 1:
-      return 'Ativo';
+        return 'Ativo';
       default:
-      return 'Inválido / Não definido';
+        return 'Inválido / Não definido';
     }
   }
 
@@ -49,7 +49,7 @@ class Gallery extends Entity
   public function getCover()
   {
     if(empty($this->cover))
-    return 'Sem Imagem';
+      return 'Sem Imagem';
 
     return $this->cover;
   }
@@ -57,7 +57,7 @@ class Gallery extends Entity
   public function getThumbnail()
   {
     if(empty($this->cover_thumbnail))
-    return 'Sem Imagem';
+      return 'Sem Imagem';
     return $this->cover_thumbnail;
   }
 
@@ -69,7 +69,7 @@ class Gallery extends Entity
   public function getVideos()
   {
     if(isset($this->videos))
-    return $this->videos;
+      return $this->videos;
     return false;
   }
 }
