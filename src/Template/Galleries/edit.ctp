@@ -29,7 +29,7 @@
 
 			echo $this->Form->input('photo_width', ['label' => 'Largura das Fotos (pixels)']);
 			echo $this->Form->input('photo_height', ['label' => 'Altura das Fotos (pixels)']);
-			echo $this->Form->select('photo_resize_mode', \AppCore\Lib\Utility\ArrayUtility::markValue(['resize' => 'Redimensionar', 'resizeCrop' => 'Redimensionar e Cortar'], $gallery->photo_resize_mode, '(atual)'), ['label' => 'Modo de Redimensionamento', 'value' => 'resizeCrop']);
+			echo $this->Form->select('photo_resize_mode', ['resize' => 'Redimensionar', 'resizeCrop' => 'Redimensionar e Cortar'], ['label' => 'Modo de Redimensionamento']);
 			echo $this->Form->submit('Editar', ['class' => 'btn btn-primary']);
 			echo $this->Form->end();
 		?>
