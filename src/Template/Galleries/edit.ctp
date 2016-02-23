@@ -21,7 +21,7 @@
 				echo $this->Form->file('cover');
 				echo '</div>';
 			}
-			echo $this->Form->select('category_id', \AppCore\Lib\Utility\ArrayUtility::markValue($categoriesList, $gallery->category_id, '(atual)'), ['label' => 'Categoria']);
+			echo $this->Form->select('category_id', $categoriesList, ['label' => 'Categoria']);
 
 			echo $this->Form->checkbox('status', ['label' => 'Ativar']);
 
